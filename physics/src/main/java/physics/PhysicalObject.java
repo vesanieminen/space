@@ -1,7 +1,5 @@
-package space;
+package physics;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 
 import static java.lang.Math.sqrt;
 
@@ -38,7 +36,7 @@ public class PhysicalObject {
         // find collision point by backstepping
 
         //backstep increment
-        final double s = -Space.seconds / 10;
+        final double s = -Physics.seconds / 10;
         //total backstep size to be found incrementally
         double dt = 0;
         //vector from this object to the other object
@@ -106,26 +104,4 @@ public class PhysicalObject {
                 + mass + ",radius=" + radius;
     }
 
-    public void paintPhysicalObject(Graphics2D graphics) {
-        if (!Space.IS_BOUNCING_BALLS) {
-            graphics.setColor(Space.weightToColor(mass));
-            int diameter = mass >= Space.EARTH_WEIGHT * 10000 ? 7 : 2;
-            int xtmp = (int) ((x - Space.centrex) / Space.scale + Space.frame.getSize().width / 2);
-            int ytmp = (int) ((y - Space.centrey) / Space.scale + Space.frame.getSize().height / 2);
-            graphics.fillOval(
-                    xtmp-diameter/2,
-                    ytmp-diameter/2,
-                    diameter,
-                    diameter);
-        } else { //BREAKOUT
-            graphics.setColor(Color.WHITE);
-            int xtmp = (int) ((x - Space.centrex)  + Space.frame.getSize().width / 2);
-            int ytmp = (int) ((y - Space.centrey)  + Space.frame.getSize().height / 2);
-            graphics.fillOval(
-                    (int) (xtmp - radius ),
-                    (int) (ytmp - radius ),
-                    (int) (2 * radius),
-                    (int) (2 * radius));
-        }
-    }
 }

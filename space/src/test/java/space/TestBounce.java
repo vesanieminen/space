@@ -2,6 +2,9 @@ package space;
 
 import org.junit.Test;
 
+import physics.PhysicalObject;
+
+
 import static java.lang.Math.sqrt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

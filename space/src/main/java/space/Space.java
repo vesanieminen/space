@@ -1,6 +1,11 @@
 package space;
 
 import javax.swing.JFrame;
+
+import physics.PhysicalObject;
+import physics.Physics;
+
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -28,7 +33,6 @@ public class Space extends JFrame implements MouseWheelListener,
     private static final long serialVersionUID = 1532817796535372081L;
 
     private static final double G = 6.67428e-11; // m3/kgs2
-    public static double seconds = 1;
     private static List<PhysicalObject> objects = new ArrayList<PhysicalObject>();
     static double centrex = 0.0;
     static double centrey = 0.0;
@@ -55,7 +59,7 @@ public class Space extends JFrame implements MouseWheelListener,
                 graphics.clearRect(0, 0, getWidth(), getHeight());
             }
             for (PhysicalObject po : objects) {
-                po.paintPhysicalObject(graphics);
+                paintPhysicalObject(graphics, po);
                 String string = "Objects:" + objects.size() + " scale:" + scale + " steps:" + step + " frame rate: " + frameRate;
                 setTitle(string);
             }
@@ -148,7 +152,7 @@ public class Space extends JFrame implements MouseWheelListener,
     }
 
     public void setStepSize(double seconds) {
-        Space.seconds = seconds;
+        Physics.seconds = seconds;
     }
 
     public static PhysicalObject add(double weightKilos, double x, double y,
@@ -176,15 +180,15 @@ public class Space extends JFrame implements MouseWheelListener,
                 }
                 double ax = fx / aff.mass;
                 double ay = fy / aff.mass;
-                aff.x = aff.x - ax * Math.pow(seconds, 2) / 2 + aff.vx * seconds;
-                aff.y = aff.y - ay * Math.pow(seconds, 2) / 2 + aff.vy * seconds;
-                aff.vx = aff.vx - ax * seconds;
-                aff.vy = aff.vy - ay * seconds;
+                aff.x = aff.x - ax * Math.pow(Physics.seconds, 2) / 2 + aff.vx * Physics.seconds;
+                aff.y = aff.y - ay * Math.pow(Physics.seconds, 2) / 2 + aff.vy * Physics.seconds;
+                aff.vx = aff.vx - ax * Physics.seconds;
+                aff.vy = aff.vy - ay * Physics.seconds;
             }
         } else {
             for (PhysicalObject physicalObject : objects) {
-                physicalObject.x = physicalObject.x + physicalObject.vx * seconds;
-                physicalObject.y = physicalObject.y + physicalObject.vy * seconds;
+                physicalObject.x = physicalObject.x + physicalObject.vx * Physics.seconds;
+                physicalObject.y = physicalObject.y + physicalObject.vy * Physics.seconds;
             }
 
         }
@@ -276,5 +280,28 @@ public class Space extends JFrame implements MouseWheelListener,
         if (e.getKeyChar() == 'w')
             showWake = !showWake;
     }
+    
+    public void paintPhysicalObject(Graphics2D graphics, PhysicalObject po) {
+        if (!Space.IS_BOUNCING_BALLS) {
+            graphics.setColor(Space.weightToColor(po.mass));
+            int diameter = po.mass >= Space.EARTH_WEIGHT * 10000 ? 7 : 2;
+            int xtmp = (int) ((po.x - Space.centrex) / Space.scale + Space.frame.getSize().width / 2);
+            int ytmp = (int) ((po.y - Space.centrey) / Space.scale + Space.frame.getSize().height / 2);
+            graphics.fillOval(
+                    xtmp-diameter/2,
+                    ytmp-diameter/2,
+                    diameter,
+                    diameter);
+        } else { //BREAKOUT
+            graphics.setColor(Color.WHITE);
+            int xtmp = (int) ((po.x - Space.centrex)  + Space.frame.getSize().width / 2);
+            int ytmp = (int) ((po.y - Space.centrey)  + Space.frame.getSize().height / 2);
+            graphics.fillOval(
+                    (int) (xtmp - po.radius ),
+                    (int) (ytmp - po.radius ),
+                    (int) (2 * po.radius),
+                    (int) (2 * po.radius));
+        }
+    }    
 
 }

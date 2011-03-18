@@ -2,6 +2,9 @@ package space;
 
 import org.junit.Test;
 
+import physics.PhysicalObject;
+
+
 import static org.junit.Assert.assertEquals;
 
 public class TestMergeObjects {
